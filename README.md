@@ -2,6 +2,15 @@
 
 [honestbee](https://honestbee.sg) on [ethereum](https://honestbee.sg)
 
+## How to run
+
+To run the _currently-simulated_ demo:
+
+```
+npm install
+npm start
+```
+
 ## Operations
 
 1. Place an order, currently supports only a restricted set of products.
