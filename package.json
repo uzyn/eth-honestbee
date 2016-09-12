@@ -7,8 +7,9 @@
     "start": "node index"
   },
   "dependencies": {
-    "isomorphic-fetch": "2.2.1",
-    "es6-promise": "3.2.1"
+    "node-fetch": "1.6.1",
+    "es6-promise": "3.2.1",
+    "form-data": "1.0.1"
   },
   "repository": {
     "type": "git",

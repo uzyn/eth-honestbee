@@ -5,11 +5,11 @@ let pollTimer;
 function order(callback) {
   // We have to order something in the labs environment.
   // The cart needs to be created first.
-  const cartToken = ;
+  const cartToken = '10aa649a-6336-50cf-acf8-b3a22ce3998f';
   console.log('Making an order using cart token...');
 
   // This returns the order.
-  return honestbee.order(cartToken);
+  return honestbee.order(cartToken, callback);
 }
 
 function checkStatus(orderGuid, callback) {
