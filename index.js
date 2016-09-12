@@ -5,7 +5,7 @@ let pollTimer;
 function order(callback) {
   // We have to order something in the labs environment.
   // The cart needs to be created first.
-  const cartToken = '10aa649a-6336-50cf-acf8-b3a22ce3998f';
+  const cartToken = '5edda86a-bd4a-51a9-a80b-4c8db9a33743';
   console.log('Making an order using cart token...');
 
   // This returns the order.
