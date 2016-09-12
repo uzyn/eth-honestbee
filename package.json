@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node index"
   },
+  "dependencies": {
+    "isomorphic-fetch": "2.2.1",
+    "es6-promise": "3.2.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uzyn/eth-honestbee.git"

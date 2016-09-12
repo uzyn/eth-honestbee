@@ -1,34 +1,40 @@
 const honestbee = require('./lib/honestbee');
 const pollSeconds = 5;
-const maxPrice = 50.00;
 let pollTimer;
 
 function order(callback) {
-  const id = 1; // hardcoded ID for A4 papers
-  console.log('Making an order of 1 box of A4 papers, setting max price to SGD 50.00');
+  // We have to order something in the labs environment.
+  // The cart needs to be created first.
+  const cartToken = ;
+  console.log('Making an order using cart token...');
 
-  return honestbee.order(id, 1, maxPrice, callback);
+  // This returns the order.
+  return honestbee.order(cartToken);
 }
 
-function checkStatus(orderId, callback) {
+function checkStatus(orderGuid, callback) {
   console.log('Checking order status...');
-
-  return honestbee.status(orderId, callback);
+  return honestbee.status(orderGuid, callback);
 }
 
 
-order((err, orderStatus) => {
+order((err, order) => {
   if (!err) {
-    console.log(`Poll for order status (order id: ${orderStatus.id} every ${pollSeconds} seconds.`);
+    console.log(`Poll for order status (order guid: ${order.orderGuid} every ${pollSeconds} seconds.`);
     pollTimer = setInterval(() => {
-      checkStatus(orderStatus.id, (err, polledStatus) => {
+      checkStatus(order.orderGuid, (err, polledStatus) => {
         console.log(polledStatus);
-        if (polledStatus.status.final) {
-          console.log(`Status is final. Final price is ${polledStatus.price.total}`);
-          console.log(`Refunding SGD ${maxPrice - polledStatus.price.total} in ETH equivalent to user.`);
+        if (polledStatus.status == 'delivered') {
+          console.log('Order is delivered.');
+          //  In theory, only when an order is reconciled do you transfer the money over to us.
+          //  Let's just assume for now, that upon delivery, there will be no discrepancy,
+          //  between what's delivered and what's order.
           clearInterval(pollTimer);
         }
       });
     }, pollSeconds * 1000);
+  }
+  else {
+    console.log('Error');
   }
 });
