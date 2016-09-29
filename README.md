@@ -4,8 +4,12 @@
 
 ## How to run
 
-To run the _currently-simulated_ demo:
+First create a `.env` file and include the following variables:
+ - ACCESS_TOKEN
+ - BACKEND_URL
+ - FRONTEND_URL
 
+To run the _currently-simulated_ demo:
 ```
 npm install
 npm start
