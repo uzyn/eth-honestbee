@@ -31,3 +31,6 @@ node_modules
 /serverdb.sqlite3
 /contract/.deployed
 /config/local.js
+
+# Environment variables
+.env
