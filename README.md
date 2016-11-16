@@ -10,9 +10,17 @@ First create a `.env` file and include the following variables:
  - FRONTEND_URL
 
 To run the _currently-simulated_ demo:
-```
+
+```bash
 npm install
 npm start
+```
+
+Update environment variables.
+
+```bash
+cp .env.default .env
+# edit .env accordingly
 ```
 
 ## Operations
