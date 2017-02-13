@@ -28,4 +28,9 @@ contract SNServiceInterface {
    * Make a new request
    */
   function make(string _params) public payable returns (uint256 requestId) {}
+
+  /**
+   * The only payable method is make()
+   */
+  function () {}
 }

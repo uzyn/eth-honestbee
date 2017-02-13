@@ -4,13 +4,25 @@
   "description": "honestbee on ethereum",
   "main": "index.js",
   "scripts": {
-    "start": "node index"
+    "build": "truffle build",
+    "console": "truffle console",
+    "migrate": "truffle migrate",
+    "deploy": "truffle migrate",
+    "start": "truffle build && truffle migrate && node .",
+    "lint": "eslint --ext=js --ignore-path .gitignore ."
   },
   "dependencies": {
     "dotenv": "^2.0.0",
     "es6-promise": "3.2.1",
     "form-data": "1.0.1",
-    "node-fetch": "1.6.1"
+    "node-fetch": "1.6.1",
+    "truffle": "^2.1",
+    "web3": "^0.18"
+  },
+  "devDependencies": {
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0"
   },
   "repository": {
     "type": "git",

@@ -11,19 +11,6 @@ contract SNStandardService is SNServiceInterface {
   uint256 public requestsCount;
   uint256 public minEthPerRequest;
 
-  /**
-   * State values
-   * ============
-   * 10: new
-   * 20: processing (optional, may not be updated by service during processing)
-   *
-   * [ FINAL STATES >= 50 ]
-   * 50: complete, success
-   * 60: complete, rejected or failed
-   */
-  event NewRequest(uint256 indexed _id, address indexed _client, string _params);
-  event RequestUpdate(uint256 indexed _id, uint8 _state, uint256 _balance);
-
   modifier onlyOwner {
     if (msg.sender != owner) {
       throw;
@@ -81,9 +68,9 @@ contract SNStandardService is SNServiceInterface {
   }
 
   /**
-   * Refund and update state to final state
+   * Finalize request (success or failure) and refund balance to client
    */
-  function refund(uint256 _id, uint8 _state, address _client, uint256 _value) public onlyManagerAndOwner {
+  function finalize(uint256 _id, uint8 _state, address _client, uint256 _value) public onlyManagerAndOwner {
     // Check for final states
     if (_state < 50) {
       throw;
