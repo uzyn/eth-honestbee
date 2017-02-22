@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "honestbee on ethereum",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "build": "truffle build",
     "console": "truffle console",
@@ -18,7 +19,7 @@
     "node-fetch": "1.6.1",
     "request": "^2.79.0",
     "truffle": "^2.1",
-    "web3": "^0.18"
+    "web3": "^0.18.2"
   },
   "devDependencies": {
     "eslint": "^3.13.1",

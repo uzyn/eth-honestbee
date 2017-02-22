@@ -75,7 +75,7 @@ contract SNStandardService is SNServiceInterface {
     if (_state < 50) {
       throw;
     }
-    if (!_client.send(_value)) {
+    if (!_client.call.value(_value)()) {
       throw;
     }
 
