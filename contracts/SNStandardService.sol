@@ -1,6 +1,7 @@
 pragma solidity ^0.4.2;
 
 import 'SNServiceInterface.sol';
+import 'WalletInterface.sol';
 
 /**
  * Smart Node Standard Service
@@ -75,11 +76,17 @@ contract SNStandardService is SNServiceInterface {
     if (_state < 50) {
       throw;
     }
-    if (!_client.call.value(_value)()) {
-      throw;
-    }
 
-    RequestUpdate(_id, _state, 0);
+    // Send as Wallet.refund if it's a SN Wallet, else a normal send
+    if (!WalletInterface(_client).refundRequest.value(_value)(_id)) {
+      if (!_client.call.value(_value)()) {
+       throw;
+      } else {
+        RequestUpdate(_id, _state, 0);
+      }
+    } else {
+      RequestUpdate(_id, _state, 0);
+    }
   }
 
   function withdraw(uint256 _value) onlyOwner {
