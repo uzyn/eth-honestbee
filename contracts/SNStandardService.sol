@@ -34,11 +34,11 @@ contract SNStandardService is SNServiceInterface {
   }
 
   function changeOwner(address _candidate) public onlyOwner {
-    owner = msg.sender;
+    owner = _candidate;
   }
 
   function changeManager(address _candidate) public onlyOwner {
-    manager = msg.sender;
+    manager = _candidate;
   }
 
   function changeMinEthPerRequest(uint256 _newMinEthPerRequest) public onlyManagerAndOwner {
@@ -80,5 +80,15 @@ contract SNStandardService is SNServiceInterface {
     }
 
     RequestUpdate(_id, _state, 0);
+  }
+
+  function withdraw(uint256 _value) onlyOwner {
+    if (!owner.call.value(_value)()) {
+        throw;
+    }
+  }
+
+  function destroy() onlyOwner {
+    selfdestruct(owner);
   }
 }
