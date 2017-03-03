@@ -46,8 +46,12 @@ function processPendingOrders() {
         console.log(`Processing order id: ${order.id} state: ${order.state}`);
         rates.ETHSGD().then((ETHSGD) => {
           console.log(`ETHSGD rate: ${ETHSGD}`);
-          // honestbee.order(order.params.order_id).then((response) => {
-          honestbee.mockOrder(order.params.order_id).then((response) => {
+
+          let orderMethod = honestbee.mockOrder;
+          if (process.env.MOCK_ORDER === '0' || process.env.MOCK_ORDER === 'false') {
+            orderMethod = honestbee.order;
+          }
+          orderMethod(order.params.order_id).then((response) => {
             const remarks = `Order successful. honestbee ID: ${response.id}, GUID: ${response.orderGuid}, SGD ${response.totalAmount}`;
             console.log(remarks);
             if (response.id && response.orderGuid) {
