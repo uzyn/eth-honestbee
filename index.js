@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { honestbee: Contract } = require('./lib/contracts');
 const honestbee = require('./lib/honestbee');
+const rates = require('./lib/rates');
 const web3 = require('./lib/web3');
 
 const contract = Contract.deployed();
@@ -43,24 +44,27 @@ function processPendingOrders() {
 
       if (order.state < 50) {
         console.log(`Processing order id: ${order.id} state: ${order.state}`);
-        // honestbee.order(order.params.order_id).then((response) => {
-        honestbee.mockOrder(order.params.order_id).then((response) => {
-          const remarks = `Order successful. honestbee ID: ${response.id}, GUID: ${response.orderGuid}, SGD ${response.totalAmount}`;
-          console.log(remarks);
-          if (response.id && response.orderGuid) {
-            const sgd = Number.parseFloat(response.totalAmount);
-            const eth = sgd / process.env.ETHSGD;
-            console.log(`Order costs: SGD ${sgd}, ETH ${eth}`);
+        rates.ETHSGD().then((ETHSGD) => {
+          console.log(`ETHSGD rate: ${ETHSGD}`);
+          // honestbee.order(order.params.order_id).then((response) => {
+          honestbee.mockOrder(order.params.order_id).then((response) => {
+            const remarks = `Order successful. honestbee ID: ${response.id}, GUID: ${response.orderGuid}, SGD ${response.totalAmount}`;
+            console.log(remarks);
+            if (response.id && response.orderGuid) {
+              const sgd = Number.parseFloat(response.totalAmount);
+              const eth = sgd / ETHSGD;
+              console.log(`Order costs: SGD ${sgd}, ETH ${eth}`);
 
-            const refund = web3.toBigNumber(order.balance).minus(web3.toWei(eth, 'ether'));
+              const refund = web3.toBigNumber(order.balance).minus(web3.toWei(eth, 'ether'));
 
-            console.log(`Refunding: ${web3.fromWei(refund, 'ether')}`);
-            console.log(order.id, 50, order.client, refund);
-            contract.finalize(order.id, 50, order.client, refund, remarks, {
-              from: process.env.ETHACCOUNT,
-              gas: 500000,
-            });
-          }
+              console.log(`Refunding: ${web3.fromWei(refund, 'ether')}`);
+              console.log(order.id, 50, order.client, refund);
+              contract.finalize(order.id, 50, order.client, refund, remarks, {
+                from: process.env.ETHACCOUNT,
+                gas: 500000,
+              });
+            }
+          });
         });
       } else {
         console.log(`Order is already final id: ${order.id} state: ${order.state}`);
