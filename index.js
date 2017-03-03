@@ -41,23 +41,28 @@ function processPendingOrders() {
       const id = orderIdsPending.pop();
       const order = orders[id];
 
-      // honestbee.order(order.params.order_id).then((response) => {
-      honestbee.mockOrder(order.params.order_id).then((response) => {
-        if (response.id && response.orderGuid) {
-          const sgd = Number.parseFloat(response.totalAmount);
-          const eth = sgd / process.env.ETHSGD;
-          console.log(`Order costs: SGD ${sgd}, ETH ${eth}`);
+      if (order.state < 50) {
+        console.log(`Processing order id: ${order.id} state: ${order.state}`);
+        // honestbee.order(order.params.order_id).then((response) => {
+        honestbee.mockOrder(order.params.order_id).then((response) => {
+          if (response.id && response.orderGuid) {
+            const sgd = Number.parseFloat(response.totalAmount);
+            const eth = sgd / process.env.ETHSGD;
+            console.log(`Order costs: SGD ${sgd}, ETH ${eth}`);
 
-          const refund = web3.toBigNumber(order.balance).minus(web3.toWei(eth, 'ether'));
+            const refund = web3.toBigNumber(order.balance).minus(web3.toWei(eth, 'ether'));
 
-          console.log(`Refunding: ${web3.fromWei(refund, 'ether')}`);
-          console.log(order.id, 50, order.client, refund);
-          contract.finalize(order.id, 50, order.client, refund, {
-            from: process.env.ETHACCOUNT,
-            gas: 500000,
-          });
-        }
-      });
+            console.log(`Refunding: ${web3.fromWei(refund, 'ether')}`);
+            console.log(order.id, 50, order.client, refund);
+            contract.finalize(order.id, 50, order.client, refund, {
+              from: process.env.ETHACCOUNT,
+              gas: 500000,
+            });
+          }
+        });
+      } else {
+        console.log(`Order is already final id: ${order.id} state: ${order.state}`);
+      }
     }
   }, timerSecs * 1000);
 }
@@ -80,7 +85,7 @@ function processNewRequestEvent(results) {
 }
 
 function processRequestUpdateEvent(results) {
-  results.map((result) => {
+  results.forEach((result) => {
     if (result.args._id) {
       const id = Number.parseInt(result.args._id, 10);
       if (!orders[id]) {
@@ -99,7 +104,6 @@ function processRequestUpdateEvent(results) {
         orderIdsPending.push(id);
       }
     }
-    return result;
   });
 
   if (orderIdsPending.length > 0) {
@@ -159,4 +163,3 @@ init().then(() => {
   console.log(orders);
   watch();
 });
-// watch
