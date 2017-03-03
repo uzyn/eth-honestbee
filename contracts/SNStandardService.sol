@@ -56,7 +56,7 @@ contract SNStandardService is SNServiceInterface {
 
     uint256 id = requestsCount;
     NewRequest(id, msg.sender, _params);
-    RequestUpdate(id, 10, msg.value);
+    RequestUpdate(id, 10, msg.value, 'Make');
     requestsCount = requestsCount + 1;
     return id;
   }
@@ -64,14 +64,14 @@ contract SNStandardService is SNServiceInterface {
   /**
    * Update request
    */
-  function update(uint256 _id, uint8 _state, uint256 _balance) public onlyManagerAndOwner {
-    RequestUpdate(_id, _state, _balance);
+  function update(uint256 _id, uint8 _state, uint256 _balance, string _remarks) public onlyManagerAndOwner {
+    RequestUpdate(_id, _state, _balance, _remarks);
   }
 
   /**
    * Finalize request (success or failure) and refund balance to client
    */
-  function finalize(uint256 _id, uint8 _state, address _client, uint256 _value) public onlyManagerAndOwner {
+  function finalize(uint256 _id, uint8 _state, address _client, uint256 _value, string _remarks) public onlyManagerAndOwner {
     // Check for final states
     if (_state < 50) {
       throw;
@@ -82,10 +82,10 @@ contract SNStandardService is SNServiceInterface {
       if (!_client.call.value(_value)()) {
        throw;
       } else {
-        RequestUpdate(_id, _state, 0);
+        RequestUpdate(_id, _state, 0, _remarks);
       }
     } else {
-      RequestUpdate(_id, _state, 0);
+      RequestUpdate(_id, _state, 0, _remarks);
     }
   }
 
